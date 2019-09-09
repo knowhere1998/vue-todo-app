@@ -7,8 +7,17 @@
 			</label>
 		</div>
 		<div class="todo-item" v-for="todo in todos" :key="todo.id">
-			<div class="" v-if="todo.completed"></div>
-			{{ todo.task }}
+			<div v-if="todo.completed" class="flex-left">
+				<span style="text-decoration: line-through;">
+					{{ todo.task }}
+				</span>
+			</div>
+			<div v-else>
+				{{todo.task }}
+			</div>
+			<span @click="removeTask(todo.id)" class="flex-right">
+				<i class="fa fa-times" aria-hidden="true"></i>
+			</span>
 		</div>
 	</div>
 </template>
@@ -20,24 +29,8 @@
 			return {
 				msg: 'Welcome to Your Vue.js App',
 				newTodo: '',
-				nextid: 4,
-				todos: [
-					{
-						id: 1,
-						task: 'Start Vue App',
-						completed: true
-					},
-					{
-						id: 2,
-						task: 'Create a TODO List Component',
-						completed: false
-					},
-					{
-						id: 3,
-						task: 'To make first commit',
-						completed: false
-					}
-				]
+				nextid: 1,
+				todos: []
 			}
 		},
 		methods:{
@@ -49,6 +42,10 @@
 				});
 				this.newTodo = '';
 				this.nextid++
+			},
+			removeTask(id){
+				console.log(id);
+				this.todos.pop()
 			}
 		}
 	}
