@@ -2,18 +2,11 @@
 	<div class="container">
 		<div class="title">
 			<h1>{{ msg }}</h1>
-			<label>
 				<input type="text" placeholder="New Task goes here..." class="new-task" v-model="newTodo" @keyup.enter="addTodo">
-			</label>
 		</div>
 		<div class="todo-item" v-for="todo in todos" :key="todo.id">
-			<div v-if="todo.completed" class="flex-left">
-				<span style="text-decoration: line-through;">
-					{{ todo.task }}
-				</span>
-			</div>
-			<div v-else>
-				{{todo.task }}
+			<div :class="{ 'completed': todo.completed }">
+				{{ todo.task }}
 			</div>
 			<span @click="removeTask(todo.id)" class="flex-right">
 				<i class="fa fa-times" aria-hidden="true"></i>
@@ -54,6 +47,10 @@
 <style>
 	.title{
 		text-align: center;
+	}
+
+	.completed {
+		text-decoration: line-through;
 	}
 
 	.new-task {
