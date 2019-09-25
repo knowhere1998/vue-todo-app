@@ -91,7 +91,7 @@
 				}
 			},
 			removeTask(id){
-				this.todos.pop()
+				this.todos.splice(id, 1)
 			},
 			toggleEdit(id){
 				this.todos[id].editMode = true;
