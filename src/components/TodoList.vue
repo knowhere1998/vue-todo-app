@@ -4,7 +4,7 @@
 			<h1>{{ msg }}</h1>
 				<input type="text" placeholder="New Task goes here..." class="new-task" v-model="newTodo" @keyup.enter="addTodo">
 		</div>
-		<div class="todo-item" v-for="(todo, index) in todos" :key="todo.id">
+		<div class="todo-item" v-for="(todo, index) in filteredTasks" :key="todo.id">
 			<div class="todo-item-left">
 				<input type="checkbox" v-model="todo.completed">
 				<div v-if="!todo.editMode" :class="{ 'completed': todo.completed }" @dblclick="toggleEdit(index)" class="todo-item-label">
@@ -17,15 +17,25 @@
 				&times;
 			</div>
 		</div>
-		<div class="bottom-container" v-if="anyTasks !== 0">
+		<div class="bottom-container border" v-if="anyTasks !== 0">
 			<div>
 				<label>
 					<input type="checkbox" :checked="!anyRemaining" @change="checkAllTasks">
 					Check all
 				</label>
 			</div>
-			<div class="right-content" v-if="remaining !== 0">
+			<div v-if="remaining !== 0">
 				{{ remaining }} items left
+			</div>
+		</div>
+		<div class="bottom-container" v-if="anyTasks !== 0">
+			<div class="buttons">
+				<button :class="{ active: filter === 'all' }" @click="filter = 'all'">All</button>
+				<button :class="{ active: filter === 'remaining' }" @click="filter = 'remaining'">Remaining</button>
+				<button :class="{ active: filter === 'completed' }" @click="filter = 'completed'">Completed</button>
+			</div>
+			<div class="clear-completed">
+				<button v-if="hasCompletedTasks" @click="clearCompleted">Clear Completed</button>
 			</div>
 		</div>
 	</div>
@@ -40,10 +50,20 @@
 				newTodo: '',
 				nextid: 1,
 				beforeEdit: '',
-				todos: []
+				todos: [],
+				filter: 'all'
 			}
 		},
 		computed:{
+			filteredTasks() {
+				if (this.filter === 'all') {
+					return this.todos
+				} else if (this.filter === 'remaining'){
+					return this.todos.filter(todo => !todo.completed)
+				} else {
+					return this.todos.filter(todo => todo.completed)
+				}
+			},
 			remaining(){
 				return this.todos.filter(todo => !todo.completed).length
 			},
@@ -52,6 +72,9 @@
 			},
 			anyTasks() {
 				return this.todos.length
+			},
+			hasCompletedTasks() {
+				return this.todos.filter(todo => todo.completed).length > 0
 			}
 		},
 		methods:{
@@ -90,6 +113,9 @@
 				} else {
 					this.todos.forEach((todo) => todo.completed = false)
 				}
+			},
+			clearCompleted(){
+				this.todos = this.todos.filter(todo => !todo.completed)
 			}
 		}
 	}
@@ -153,9 +179,25 @@
 		align-items: center;
 		justify-content: space-between;
 		font-size: 16px;
-		border-top: 1px solid lightgray;
 		padding: 10px 18px;
 		width: 100%;
 		margin-bottom: 14px;
 	}
+
+	.border{
+		border-top: 1px solid lightgray;
+	}
+
+	.active {
+		background-color: lightblue;
+	}
+
+	button{
+		background-color: #fff;
+		-webkit-appearance: none;
+		-moz-appearance: none;
+		appearance: none;
+		font-size: 16px;
+	}
+
 </style>
