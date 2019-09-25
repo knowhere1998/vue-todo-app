@@ -4,13 +4,18 @@
 			<h1>{{ msg }}</h1>
 				<input type="text" placeholder="New Task goes here..." class="new-task" v-model="newTodo" @keyup.enter="addTodo">
 		</div>
-		<div class="todo-item" v-for="todo in todos" :key="todo.id">
-			<div :class="{ 'completed': todo.completed }">
-				{{ todo.task }}
+		<div class="todo-item" v-for="(todo, index) in todos" :key="todo.id">
+			<div class="todo-item-left">
+				<input type="checkbox" v-model="todo.completed">
+				<div v-if="!todo.editMode" :class="{ 'completed': todo.completed }" @dblclick="toggleEdit(index)" class="todo-item-label">
+					{{ todo.task }}
+				</div>
+				<input class="todo-item-edit" type="text" v-else v-model="todo.task" @blur="doneEdit(todo)"
+					   @keyup.escape="abortEdit(todo)" @keyup.enter="doneEdit(todo)">
 			</div>
-			<span @click="removeTask(todo.id)" class="flex-right">
-				<i class="fa fa-times" aria-hidden="true"></i>
-			</span>
+			<div class="remove-item" @click="removeTask(index)">
+				&times;
+			</div>
 		</div>
 	</div>
 </template>
@@ -23,22 +28,39 @@
 				msg: 'Welcome to Your Vue.js App',
 				newTodo: '',
 				nextid: 1,
+				beforeEdit: '',
 				todos: []
 			}
 		},
 		methods:{
 			addTodo(){
-				this.todos.push({
-					id: this.nextid,
-					task: this.newTodo,
-					completed: false
-				});
-				this.newTodo = '';
-				this.nextid++
+				if (this.newTodo.trim().length !== 0) {
+					this.todos.push({
+						id: this.nextid,
+						task: this.newTodo.trim(),
+						completed: false,
+						editMode: false
+					});
+					this.newTodo = '';
+					this.nextid++
+				}
 			},
 			removeTask(id){
-				console.log(id);
 				this.todos.pop()
+			},
+			toggleEdit(id){
+				this.todos[id].editMode = true;
+				this.beforeEdit = this.todos[id].task;
+			},
+			abortEdit(obj){
+				obj.task = this.beforeEdit;
+				obj.editMode = false
+			},
+			doneEdit(obj){
+				if(obj.task.trim().length === 0){
+					obj.task = this.beforeEdit
+				}
+				obj.editMode = false
 			}
 		}
 	}
@@ -51,6 +73,40 @@
 
 	.completed {
 		text-decoration: line-through;
+		color: gray;
+	}
+
+	.todo-item {
+		margin-bottom: 12px;
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+	}
+
+	.todo-item-left {
+		margin-bottom: 12px;
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+	}
+
+	.todo-item-label {
+		padding: 10px;
+		border: 1px solid white;
+		margin-left: 12px;
+	}
+
+	.todo-item-edit {
+		font-size: 24px;
+		margin-left: 12px;
+		border: 1px solid #ccc;
+		padding: 10px;
+		width: 100%;
+		color: #2c3e50;
+	}
+
+	.remove-item:hover {
+		color: red;
 	}
 
 	.new-task {
