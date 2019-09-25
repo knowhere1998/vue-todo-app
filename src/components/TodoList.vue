@@ -17,6 +17,17 @@
 				&times;
 			</div>
 		</div>
+		<div class="bottom-container" v-if="anyTasks !== 0">
+			<div>
+				<label>
+					<input type="checkbox" :checked="!anyRemaining" @change="checkAllTasks">
+					Check all
+				</label>
+			</div>
+			<div class="right-content" v-if="remaining !== 0">
+				{{ remaining }} items left
+			</div>
+		</div>
 	</div>
 </template>
 
@@ -30,6 +41,17 @@
 				nextid: 1,
 				beforeEdit: '',
 				todos: []
+			}
+		},
+		computed:{
+			remaining(){
+				return this.todos.filter(todo => !todo.completed).length
+			},
+			anyRemaining() {
+				return this.remaining !== 0
+			},
+			anyTasks() {
+				return this.todos.length
 			}
 		},
 		methods:{
@@ -61,6 +83,13 @@
 					obj.task = this.beforeEdit
 				}
 				obj.editMode = false
+			},
+			checkAllTasks() {
+				if (this.anyRemaining) {
+					this.todos.forEach((todo) => todo.completed = true)
+				} else {
+					this.todos.forEach((todo) => todo.completed = false)
+				}
 			}
 		}
 	}
@@ -77,10 +106,11 @@
 	}
 
 	.todo-item {
-		margin-bottom: 12px;
 		display: flex;
 		align-items: center;
 		justify-content: space-between;
+		padding: 10px 18px;
+		width: 100%;
 	}
 
 	.todo-item-left {
@@ -98,9 +128,7 @@
 
 	.todo-item-edit {
 		font-size: 24px;
-		margin-left: 12px;
 		border: 1px solid #ccc;
-		padding: 10px;
 		width: 100%;
 		color: #2c3e50;
 	}
@@ -118,5 +146,16 @@
 
 	&:focus {
 		outline: 0;
+	}
+
+	.bottom-container{
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		font-size: 16px;
+		border-top: 1px solid lightgray;
+		padding: 10px 18px;
+		width: 100%;
+		margin-bottom: 14px;
 	}
 </style>
