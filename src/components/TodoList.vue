@@ -128,6 +128,7 @@
 <style>
 	.title{
 		text-align: center;
+		margin-bottom: 15px;
 	}
 
 	h1{
