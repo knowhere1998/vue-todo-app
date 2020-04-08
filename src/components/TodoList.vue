@@ -1,5 +1,5 @@
 <template>
-	<div class="container">
+	<div class="container card-content">
 		<div class="title">
 			<h1>{{ msg }}</h1>
 				<input type="text" placeholder="New Task goes here..." class="new-task" v-model="newTodo" @keyup.enter="addTodo">
@@ -19,7 +19,7 @@
 		</div>
 		<div class="bottom-container border" v-if="anyTasks !== 0">
 			<div>
-				<label>
+				<label class="checkbox">
 					<input type="checkbox" :checked="!anyRemaining" @change="checkAllTasks">
 					Check all
 				</label>
@@ -28,14 +28,18 @@
 				{{ remaining }} items left
 			</div>
 		</div>
-		<div class="bottom-container" v-if="anyTasks !== 0">
-			<div class="buttons">
-				<button :class="{ active: filter === 'all' }" @click="filter = 'all'">All</button>
-				<button :class="{ active: filter === 'remaining' }" @click="filter = 'remaining'">Remaining</button>
-				<button :class="{ active: filter === 'completed' }" @click="filter = 'completed'">Completed</button>
+		<div class="bottom-container level" v-if="anyTasks !== 0">
+			<div class="buttons level-left">
+				<div class="level-item">
+					<button class="button is-small is-link" :class="{ 'is-primary': filter === 'all' }" @click="filter = 'all'">All</button>
+					<button class="button is-small is-link" :class="{ 'is-primary': filter === 'remaining' }" @click="filter = 'remaining'">Remaining</button>
+					<button class="button is-small is-link" :class="{ 'is-primary': filter === 'completed' }" @click="filter = 'completed'">Completed</button>
+				</div>
 			</div>
-			<div class="clear-completed">
-				<button v-if="hasCompletedTasks" @click="clearCompleted">Clear Completed</button>
+			<div class="clear-completed level-right">
+				<div class="level-item">
+					<button class="button is-small is-danger" v-if="hasCompletedTasks" @click="clearCompleted">Clear Completed</button>
+				</div>
 			</div>
 		</div>
 	</div>
@@ -46,7 +50,7 @@
 		name: "TodoList",
 		data () {
 			return {
-				msg: 'Welcome to Your Vue.js App',
+				msg: 'Welcome to TODO Vue.js App',
 				newTodo: '',
 				nextid: 1,
 				beforeEdit: '',
@@ -126,6 +130,12 @@
 		text-align: center;
 	}
 
+	h1{
+		font-weight: bolder;
+
+		padding-bottom: 20px;
+	}
+
 	.completed {
 		text-decoration: line-through;
 		color: gray;
@@ -135,7 +145,7 @@
 		display: flex;
 		align-items: center;
 		justify-content: space-between;
-		padding: 10px 18px;
+		padding: 5px 18px;
 		width: 100%;
 	}
 
@@ -167,7 +177,6 @@
 		width: 100%;
 		padding: 10px 18px;
 		font-size: 18px;
-		margin-bottom: 16px;
 	}
 
 	&:focus {
@@ -179,9 +188,9 @@
 		align-items: center;
 		justify-content: space-between;
 		font-size: 16px;
-		padding: 10px 18px;
+		padding: 10px 18px 0 18px;
 		width: 100%;
-		margin-bottom: 14px;
+		margin-bottom: 8px;
 	}
 
 	.border{
