@@ -58,6 +58,14 @@
 				filter: 'all'
 			}
 		},
+		mounted: function () {
+			console.log("Attmepting to load");
+			this.loadData();
+
+			setInterval(function () {
+				this.storeData();
+			}.bind(this), 3000); 
+  		},
 		computed:{
 			filteredTasks() {
 				if (this.filter === 'all') {
@@ -120,6 +128,20 @@
 			},
 			clearCompleted(){
 				this.todos = this.todos.filter(todo => !todo.completed)
+			},
+			loadData() {
+				if ($cookies.isKey("tasks")){
+					if ($cookies.get("tasks").length > 0) {
+						this.todos = JSON.parse($cookies.get("tasks"));
+						console.log(JSON.parse($cookies.get("tasks")));
+					}
+				};
+			},
+			storeData(){
+				if (this.todos.length > 0){
+					$cookies.set("tasks", JSON.stringify(this.todos));
+					console.log(JSON.stringify(this.todos));
+				}
 			}
 		}
 	}
